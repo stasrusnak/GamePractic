@@ -30,8 +30,8 @@ export default {
   methods:{
     init(){
       this.controlsBar = {
-        width: this.canvas.width,
-        height: this.cellSize
+        width: this.cellSize,
+        height: this.canvas.width
       }
     },
 
@@ -42,7 +42,8 @@ export default {
       // console.log(this.ctxxx)
 
     this.ctx.fillStyle = 'green'
-    this.ctx.fillRect(0,0,this.controlsBar.width,this.controlsBar.height);
+    // this.ctx.fillRect(0,0,this.controlsBar.width,this.controlsBar.height);
+    this.ctx.fillRect(0,0,300,10);
     requestAnimationFrame(this.animate)
   }
 
