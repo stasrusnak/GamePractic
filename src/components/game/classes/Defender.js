@@ -16,6 +16,6 @@ export default class Defender {
     this.ctx.fillRect(this.x, this.y, this.width, this.height)
     this.ctx.fillStyle = 'gold'
     this.ctx.font = '20px Arial'
-    this.ctx.fillText(Math.floor(this.health),this.x,this.y)
+    this.ctx.fillText(Math.floor(this.health),this.x+15,this.y+30)
   }
 }
