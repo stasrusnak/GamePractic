@@ -9,8 +9,8 @@
 
 <style scoped>
 .main{
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*margin-top: 1rem;*/
 }
 </style>

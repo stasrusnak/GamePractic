@@ -1,8 +1,10 @@
 <template>
-    <div>
-        <canvas class="game" ref="game"></canvas>
-    </div>
-</template>
+        <div class="container">
 
-<script src="./game.js"/>
+                <canvas class="game" ref="game" :height="height" :width="width"></canvas>
+        </div>>
+
+</template>
 <style src='./game.scss'/>
+<script src="./game.js"/>
+
