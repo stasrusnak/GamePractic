@@ -1,8 +1,7 @@
 <template>
         <div class="container">
-
                 <canvas class="game" ref="game" :height="height" :width="width"></canvas>
-        </div>>
+       </div>>
 
 </template>
 <style src='./game.scss'/>

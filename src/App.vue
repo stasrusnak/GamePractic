@@ -1,16 +1,9 @@
 <template>
-  <Game class="main"></Game>
+  <Game class="main"/>
+<!--  <Test></Test>-->
 </template>
 
 <script setup>
   import './assets/styles/main.scss'
   import Game from './components/game/game.vue'
 </script>
-
-<style scoped>
-.main{
-  /*display: flex;*/
-  /*justify-content: center;*/
-  /*margin-top: 1rem;*/
-}
-</style>
