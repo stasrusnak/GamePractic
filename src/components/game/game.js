@@ -1,27 +1,30 @@
+import Cell from "./classes/Cell";
+import Defender from "./classes/Defender";
+import Enemy from "./classes/Enemy";
 const cellSize = 100;
 const cellGrid = 3;
 const gameGrid = []
-import Cell from "./classes/Cell";
-import Defender from "./classes/Defender";
-
 let mouse = {}
+
 
 export default {
   name: "game",
   data() {
     return {
       fps: 0,
+      frame: 0,
       times: [],
       canvas: null,
       ctx: null,
       width: 900,
       height: 600,
+      gameOver:false,
       numberOfResources: 400,
       defenders: [],
+      enemies: [],
+      enemiesInterval: 600,
+      enemyPosition: [],
       canvasPosition: null,
-      rendering: false,
-      request: '', // requestAnimationFrame
-      btnToggle: true,
       cellSize,
       cellGrid,
       gameGrid,
@@ -29,18 +32,11 @@ export default {
         width: null,
         height: null,
       },
-
-      previousElapsed: null,
-      gameLoop: null,
-      delta: null,
       move: false
     }
   },
   computed: {},
-
-
   methods: {
-
     handleMouse() {
       mouse = {
         x: 10,
@@ -50,13 +46,12 @@ export default {
       }
       this.canvasPosition = this.canvas.getBoundingClientRect()
       this.canvas.addEventListener('mousemove', (e) => {
-
         mouse.x = e.x - this.canvasPosition.left
         mouse.y = e.y - this.canvasPosition.top
       })
       this.canvas.addEventListener('mouseleave', () => {
         mouse.x = undefined,
-          mouse.y = undefined
+        mouse.y = undefined
 
       })
       this.canvas.addEventListener('click', () => {
@@ -87,11 +82,36 @@ export default {
       for (let i = 0; i < this.gameGrid.length; i++) {
         this.gameGrid[i].draw()
       }
-      console.log(this.gameGrid)
+      // console.log(this.gameGrid)
     },
     handleDefenders() {
       for (let i = 0; i < this.defenders.length; i++) {
         this.defenders[i].draw()
+        for (let j = 0; j < this.enemies.length; j++) {
+          if(this.defenders[i] && new Cell().collision(this.defenders[i],this.enemies[j])){
+            this.enemies[j].movement = 0
+            this.defenders[i].health -=0.2;
+          }
+          if (this.defenders[i] && this.defenders[i].health<=0){
+            this.defenders.splice(i,1)
+            i--;
+            this.enemies[j].movement = this.enemies[j].speed
+          }
+        }
+
+      }
+    },
+    handleEnemies() {
+      for (let i = 0; i < this.enemies.length; i++) {
+        this.enemies[i].update()
+        this.enemies[i].draw()
+        if (this.enemies[i].x < 0) this.gameOver = true
+      }
+      if(this.frame % this.enemiesInterval ===0){
+        let verticalPos = Math.floor(Math.random()*5+1) * cellSize
+        this.enemies.push(new Enemy(this.canvas,verticalPos, cellSize, this.ctx))
+        this.enemyPosition.push(verticalPos)
+        if(this.enemiesInterval > 120) this.enemiesInterval -= 100
       }
     },
 
@@ -112,6 +132,7 @@ export default {
         width: this.canvas.width,
         height: this.cellSize
       }
+
     },
 
     animate() {
@@ -121,7 +142,13 @@ export default {
       this.createGrid(this.ctx)
       this.handleGameGrid()
       this.handleDefenders()
+      this.handleEnemies()
       this.handleGameStatus()
+      this.frame++
+      this.gameGrid=[]
+      if(!this.gameOver) requestAnimationFrame(this.animate)
+
+
     },
     getFps() {
       window.requestAnimationFrame(() => {
@@ -136,22 +163,22 @@ export default {
     },
   },
 
-  watch:{
-    move(value) {
-    console.log(value)
-    if (value) {
-      requestAnimationFrame(this.animate)
-      this.move = false
-    }
-  }
-  },
+  // watch: {
+  //   move(value) {
+  //     console.log(value)
+  //     if (value) {
+  //       requestAnimationFrame(this.animate)
+  //       this.move = false
+  //     }
+  //   }
+  // },
   mounted() {
     this.getFps();
     this.init();
     this.handleMouse();
     this.animate()
+  },
 
-  }
 }
 
 
