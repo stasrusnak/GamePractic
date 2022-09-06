@@ -6,7 +6,6 @@ const cellGrid = 3;
 const gameGrid = []
 let mouse = {}
 
-
 export default {
   name: "game",
   data() {
@@ -162,16 +161,7 @@ export default {
       });
     },
   },
-
-  // watch: {
-  //   move(value) {
-  //     console.log(value)
-  //     if (value) {
-  //       requestAnimationFrame(this.animate)
-  //       this.move = false
-  //     }
-  //   }
-  // },
+ 
   mounted() {
     this.getFps();
     this.init();
