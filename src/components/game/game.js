@@ -86,10 +86,13 @@ export default {
       // console.log(this.gameGrid)
     },
     handleDefenders() {
+
       for (let i = 0; i < this.defenders.length; i++) {
         this.defenders[i].draw()
         this.defenders[i].update()
-        console.log(this.projectiles.length)
+        if(this.defenders[i].projectiles.length >0){
+          this.projectiles = this.defenders[i].projectiles
+        }
 
         for (let j = 0; j < this.enemies.length; j++) {
           if (this.defenders[i] && new Cell().collision(this.defenders[i], this.enemies[j])) {
@@ -104,6 +107,7 @@ export default {
         }
 
       }
+
     },
     handleProjectiles() {
 
@@ -114,7 +118,7 @@ export default {
           this.projectiles[i].splice(i,1)
           i--;
         }
-        console.log('this.projectiles.length '+this.projectiles.length)
+
       }
     },
     handleEnemies() {
