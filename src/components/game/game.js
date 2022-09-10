@@ -1,6 +1,7 @@
 import Cell from "./classes/Cell";
 import Defender from "./classes/Defender";
 import Enemy from "./classes/Enemy";
+
 const cellSize = 100;
 const cellGrid = 3;
 const gameGrid = []
@@ -17,7 +18,7 @@ export default {
       ctx: null,
       width: 900,
       height: 600,
-      gameOver:false,
+      gameOver: false,
       numberOfResources: 400,
       defenders: [],
       enemies: [],
@@ -31,6 +32,7 @@ export default {
         width: null,
         height: null,
       },
+      projectiles: [],
       move: false
     }
   },
@@ -50,7 +52,7 @@ export default {
       })
       this.canvas.addEventListener('mouseleave', () => {
         mouse.x = undefined,
-        mouse.y = undefined
+          mouse.y = undefined
 
       })
       this.canvas.addEventListener('click', () => {
@@ -86,18 +88,33 @@ export default {
     handleDefenders() {
       for (let i = 0; i < this.defenders.length; i++) {
         this.defenders[i].draw()
+        this.defenders[i].update()
+        console.log(this.projectiles.length)
+
         for (let j = 0; j < this.enemies.length; j++) {
-          if(this.defenders[i] && new Cell().collision(this.defenders[i],this.enemies[j])){
+          if (this.defenders[i] && new Cell().collision(this.defenders[i], this.enemies[j])) {
             this.enemies[j].movement = 0
-            this.defenders[i].health -=0.2;
+            this.defenders[i].health -= 0.2;
           }
-          if (this.defenders[i] && this.defenders[i].health<=0){
-            this.defenders.splice(i,1)
+          if (this.defenders[i] && this.defenders[i].health <= 0) {
+            this.defenders.splice(i, 1)
             i--;
             this.enemies[j].movement = this.enemies[j].speed
           }
         }
 
+      }
+    },
+    handleProjectiles() {
+
+      for (let i = 0; i < this.projectiles.length; i++) {
+        this.projectiles[i].update()
+        this.projectiles[i].draw()
+        if(this.projectiles[i] && this.projectiles[i].x > this.canvas.width - cellSize){
+          this.projectiles[i].splice(i,1)
+          i--;
+        }
+        console.log('this.projectiles.length '+this.projectiles.length)
       }
     },
     handleEnemies() {
@@ -106,11 +123,11 @@ export default {
         this.enemies[i].draw()
         if (this.enemies[i].x < 0) this.gameOver = true
       }
-      if(this.frame % this.enemiesInterval ===0){
-        let verticalPos = Math.floor(Math.random()*5+1) * cellSize
-        this.enemies.push(new Enemy(this.canvas,verticalPos, cellSize, this.ctx))
+      if (this.frame % this.enemiesInterval === 0) {
+        let verticalPos = Math.floor(Math.random() * 5 + 1) * cellSize
+        this.enemies.push(new Enemy(this.canvas, verticalPos, cellSize, this.ctx))
         this.enemyPosition.push(verticalPos)
-        if(this.enemiesInterval > 120) this.enemiesInterval -= 100
+        if (this.enemiesInterval > 120) this.enemiesInterval -= 100
       }
     },
 
@@ -141,11 +158,12 @@ export default {
       this.createGrid(this.ctx)
       this.handleGameGrid()
       this.handleDefenders()
+      this.handleProjectiles()
       this.handleEnemies()
       this.handleGameStatus()
       this.frame++
-      this.gameGrid=[]
-      if(!this.gameOver) requestAnimationFrame(this.animate)
+      this.gameGrid = []
+      if (!this.gameOver) requestAnimationFrame(this.animate)
 
 
     },
@@ -161,7 +179,7 @@ export default {
       });
     },
   },
- 
+
   mounted() {
     this.getFps();
     this.init();

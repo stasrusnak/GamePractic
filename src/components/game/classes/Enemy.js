@@ -4,7 +4,7 @@ export default class Enemy {
     this.y = verticalPos
     this.width = cellSize
     this.height = cellSize
-    this.speed = Math.random()*0.2+0.4
+    this.speed = Math.random()*0.4+0.7
     this.movement = this.speed
     this.health=100
     this.maxHealth = this.health
