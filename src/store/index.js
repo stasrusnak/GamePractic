@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 
-import projectiles from './projectiles/index.js';
+import projectiles from './projectiles/index';
 
 
 export default createStore({

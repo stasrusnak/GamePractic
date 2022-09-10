@@ -11,9 +11,8 @@ const getters = {
 
 const mutations = {
   [PROJECTILES](state, projectiles) {
-
     if (projectiles) {
-      state.projectiles = projectiles
+      state.projectiles.push(projectiles)
     }
   },
 };

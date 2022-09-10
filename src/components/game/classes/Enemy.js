@@ -21,4 +21,5 @@ export default class Enemy {
     this.ctx.font = '30px Arial'
     this.ctx.fillText(Math.floor(this.health),this.x+15,this.y+30)
   }
+
 }

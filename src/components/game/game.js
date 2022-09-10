@@ -1,6 +1,8 @@
 import Cell from "./classes/Cell";
 import Defender from "./classes/Defender";
 import Enemy from "./classes/Enemy";
+import {mapGetters} from "vuex";
+
 
 const cellSize = 100;
 const cellGrid = 3;
@@ -20,6 +22,7 @@ export default {
       height: 600,
       gameOver: false,
       numberOfResources: 400,
+      score: 0,
       defenders: [],
       enemies: [],
       enemiesInterval: 600,
@@ -36,7 +39,12 @@ export default {
       move: false
     }
   },
-  computed: {},
+  computed: {
+    // ...mapGetters({
+    //   projectiles: 'projectiles',
+    // }),
+
+  },
   methods: {
     handleMouse() {
       mouse = {
@@ -77,7 +85,8 @@ export default {
     handleGameStatus() {
       this.ctx.fillStyle = 'gold'
       this.ctx.font = '20px Arial'
-      this.ctx.fillText('Gold: ' + this.numberOfResources, 20, 55)
+      this.ctx.fillText('Gold: ' + this.numberOfResources, 20, 25)
+      this.ctx.fillText('Score: ' + this.score, 20, 75)
     },
     handleGameGrid() {
       for (let i = 0; i < this.gameGrid.length; i++) {
@@ -90,7 +99,7 @@ export default {
       for (let i = 0; i < this.defenders.length; i++) {
         this.defenders[i].draw()
         this.defenders[i].update()
-        if(this.defenders[i].projectiles.length >0){
+        if (this.defenders[i].projectiles.length > 0) {
           this.projectiles = this.defenders[i].projectiles
         }
 
@@ -110,27 +119,20 @@ export default {
 
     },
     handleProjectiles() {
-
       for (let i = 0; i < this.projectiles.length; i++) {
         this.projectiles[i].update()
         this.projectiles[i].draw()
-
         for (let j = 0; j < this.enemies.length; j++) {
           if (this.projectiles[i] && this.enemies[j] && new Cell().collision(this.projectiles[i], this.enemies[j])) {
-            console.log(this.projectiles)
-
-            this.enemies[i].health -= this.projectiles[i].power;
-            this.projectiles.splice(i,1)
+             this.enemies[i].health -= this.projectiles[i].power;
+            this.projectiles.splice(i, 1)
             i--;
           }
-
         }
-
-        if(this.projectiles[i] && this.projectiles[i].length>=0 && this.projectiles[i].x > this.canvas.width - cellSize){
-          this.projectiles[i].splice(i,1)
+        if (this.projectiles[i] && this.projectiles[i].length >= 0 && this.projectiles[i].x > this.canvas.width - cellSize) {
+          this.projectiles[i].splice(i, 1)
           i--;
         }
-
       }
     },
     handleEnemies() {
@@ -139,8 +141,11 @@ export default {
         this.enemies[i].draw()
         if (this.enemies[i].x < 0) this.gameOver = true
 
-        if (this.enemies[i].health<=0){
-          this.enemies.splice(i,1)
+        if (this.enemies[i].health <= 0) {
+          let gaindeResources = this.enemies[i].maxHealth/10
+          this.numberOfResources += gaindeResources
+          this.score += this.numberOfResources
+          this.enemies.splice(i, 1)
           i--;
         }
 
@@ -170,6 +175,7 @@ export default {
         width: this.canvas.width,
         height: this.cellSize
       }
+
 
     },
 
