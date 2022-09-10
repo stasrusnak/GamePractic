@@ -2,10 +2,11 @@ export default class Projectiles {
   constructor(x, y, ctx) {
     this.x = x
     this.y = y
-    this.width = 10
-    this.height = 10
+    this.width = 5
+    this.height = 5
     this.speed = 5
     this.ctx = ctx
+    this.power =20
   }
 
   update() {

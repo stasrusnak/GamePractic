@@ -22,12 +22,8 @@ export default class Defender {
   }
   update(){
     this.timer++;
-
     if(this.timer % 100 === 0 ){
-
-
-      this.projectiles.push(new Projectiles( this.x, this.y, this.ctx))
-
+      this.projectiles.push(new Projectiles( this.x+50, this.y+50, this.ctx))
     }
 
   }

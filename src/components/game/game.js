@@ -114,7 +114,19 @@ export default {
       for (let i = 0; i < this.projectiles.length; i++) {
         this.projectiles[i].update()
         this.projectiles[i].draw()
-        if(this.projectiles[i] && this.projectiles[i].x > this.canvas.width - cellSize){
+
+        for (let j = 0; j < this.enemies.length; j++) {
+          if (this.projectiles[i] && this.enemies[j] && new Cell().collision(this.projectiles[i], this.enemies[j])) {
+            console.log(this.projectiles)
+
+            this.enemies[i].health -= this.projectiles[i].power;
+            this.projectiles.splice(i,1)
+            i--;
+          }
+
+        }
+
+        if(this.projectiles[i] && this.projectiles[i].length>=0 && this.projectiles[i].x > this.canvas.width - cellSize){
           this.projectiles[i].splice(i,1)
           i--;
         }
@@ -126,6 +138,12 @@ export default {
         this.enemies[i].update()
         this.enemies[i].draw()
         if (this.enemies[i].x < 0) this.gameOver = true
+
+        if (this.enemies[i].health<=0){
+          this.enemies.splice(i,1)
+          i--;
+        }
+
       }
       if (this.frame % this.enemiesInterval === 0) {
         let verticalPos = Math.floor(Math.random() * 5 + 1) * cellSize
