@@ -7,7 +7,7 @@ export default class Defender {
     this.y = y
     this.width = cellSize
     this.height = cellSize
-    this.shooting = true
+    this.shooting = false
     this.health = 100
     this.projectiles = []
     this.timer=0

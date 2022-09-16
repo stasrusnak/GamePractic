@@ -99,6 +99,12 @@ export default {
       for (let i = 0; i < this.defenders.length; i++) {
         this.defenders[i].draw()
         this.defenders[i].update()
+        if(this.enemyPosition.indexOf(this.defenders[i].y) !== -1){
+          this.defenders[i].shooting = true
+        }else {
+          this.defenders[i].shooting = false
+        }
+
         if (this.defenders[i].projectiles.length > 0) {
           this.projectiles = this.defenders[i].projectiles
         }
@@ -150,7 +156,6 @@ export default {
 
           this.enemies.splice(i, 1)
           i--;
-          console.log('findIndex')
           console.log(this.enemyPosition)
         }
 
