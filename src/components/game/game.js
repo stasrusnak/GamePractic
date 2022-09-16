@@ -145,8 +145,13 @@ export default {
           let gaindeResources = this.enemies[i].maxHealth/10
           this.numberOfResources += gaindeResources
           this.score += this.numberOfResources
+          const findIndex = this.enemyPosition.indexOf(this.enemies[i].y)
+          this.enemyPosition.splice(findIndex,1)
+
           this.enemies.splice(i, 1)
           i--;
+          console.log('findIndex')
+          console.log(this.enemyPosition)
         }
 
       }
