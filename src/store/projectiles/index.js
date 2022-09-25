@@ -1,6 +1,5 @@
 import {PROJECTILES} from '../mutations';
 
-
 const state = {
   projectiles: [],
 };

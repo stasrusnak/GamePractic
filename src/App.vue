@@ -1,6 +1,5 @@
 <template>
   <Game class="main"/>
-<!--  <Test></Test>-->
 </template>
 
 <script setup>

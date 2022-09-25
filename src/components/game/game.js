@@ -154,6 +154,10 @@ export default {
           const findIndex = this.enemyPosition.indexOf(this.enemies[i].y)
           this.enemyPosition.splice(findIndex,1)
 
+
+          // console.log(this.gameGrid)
+
+
           this.enemies.splice(i, 1)
           i--;
           console.log(this.enemyPosition)
