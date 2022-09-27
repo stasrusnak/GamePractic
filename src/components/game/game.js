@@ -1,6 +1,7 @@
 import Cell from "./classes/Cell";
 import Defender from "./classes/Defender";
 import Enemy from "./classes/Enemy";
+import Resource from "./classes/Resource";
 import {mapGetters} from "vuex";
 
 
@@ -23,8 +24,10 @@ export default {
       gameOver: false,
       numberOfResources: 400,
       score: 0,
+      winningScore: 2000,
       defenders: [],
       enemies: [],
+      resources: [],
       enemiesInterval: 600,
       enemyPosition: [],
       canvasPosition: null,
@@ -60,13 +63,13 @@ export default {
       })
       this.canvas.addEventListener('mouseleave', () => {
         mouse.x = undefined,
-          mouse.y = undefined
+        mouse.y = undefined
 
       })
       this.canvas.addEventListener('click', () => {
         this.move = true
-        const gridPosX = mouse.x - (mouse.x % cellSize)
-        const gridPosY = mouse.y - (mouse.y % cellSize)
+        const gridPosX = mouse.x - (mouse.x % cellSize) + cellGrid
+        const gridPosY = mouse.y - (mouse.y % cellSize) + cellGrid
         if (gridPosY < cellSize) return
         for (let i = 0; i < this.defenders.length; i++) {
           if (this.defenders[i].x === gridPosX && this.defenders[i].y === gridPosY) {
@@ -76,7 +79,7 @@ export default {
 
         let defenderCost = 100;
         if (this.numberOfResources >= defenderCost) {
-          this.defenders.push(new Defender(gridPosX, gridPosY, cellSize, this.ctx))
+          this.defenders.push(new Defender(gridPosX, gridPosY, cellSize, cellGrid, this.ctx))
           this.numberOfResources -= defenderCost
         }
       })
@@ -122,7 +125,24 @@ export default {
         }
 
       }
+    },
 
+    handleResource(){
+
+      if (this.frame % 500 === 0 && this.score < this.winningScore){
+        this.resources.push(new Resource(this.canvas, cellSize, cellGrid, this.ctx));
+      }
+
+      for (let i = 0; i <  this.resources.length; i++){
+        this.resources[i].draw();
+        if (this.resources[i] && mouse.x && mouse.y && new Cell().collision(this.resources[i], mouse)){
+
+          console.log('handleResource')
+          this.numberOfResources += this.resources[i].amount;
+          this.resources.splice(i, 1);
+          i--;
+        }
+      }
     },
     handleProjectiles() {
       for (let i = 0; i < this.projectiles.length; i++) {
@@ -160,13 +180,13 @@ export default {
 
           this.enemies.splice(i, 1)
           i--;
-          console.log(this.enemyPosition)
+          // console.log(this.enemyPosition)
         }
 
       }
       if (this.frame % this.enemiesInterval === 0) {
-        let verticalPos = Math.floor(Math.random() * 5 + 1) * cellSize
-        this.enemies.push(new Enemy(this.canvas, verticalPos, cellSize, this.ctx))
+        let verticalPos = Math.floor(Math.random() * 5 + 1) * cellSize + cellGrid
+        this.enemies.push(new Enemy(this.canvas, verticalPos, cellSize, cellGrid, this.ctx))
         this.enemyPosition.push(verticalPos)
         if (this.enemiesInterval > 120) this.enemiesInterval -= 100
       }
@@ -199,6 +219,7 @@ export default {
       this.ctx.fillRect(0, 0, this.controlsBar.width, this.controlsBar.height);
       this.createGrid(this.ctx)
       this.handleGameGrid()
+      this.handleResource()
       this.handleDefenders()
       this.handleProjectiles()
       this.handleEnemies()

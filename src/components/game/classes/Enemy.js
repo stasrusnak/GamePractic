@@ -1,9 +1,9 @@
 export default class Enemy {
-  constructor(canvas,verticalPos, cellSize, ctx) {
+  constructor(canvas,verticalPos, cellSize,cellGrid, ctx) {
     this.x = canvas.width
     this.y = verticalPos
-    this.width = cellSize
-    this.height = cellSize
+    this.width = cellSize - cellGrid * 2
+    this.height = cellSize - cellGrid * 2
     this.speed = Math.random()*0.4+0.7
     this.movement = this.speed
     this.health=100

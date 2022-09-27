@@ -2,12 +2,12 @@ import Projectiles from "./Projectiles";
 import store from '../../../store'
 
 export default class Defender {
-  constructor(x, y, cellSize, ctx) {
+  constructor(x, y, cellSize,cellGrid, ctx) {
     this.x = x
     this.y = y
-    this.width = cellSize
-    this.height = cellSize
-    this.shooting = false
+    this.width = cellSize - cellGrid * 2
+    this.height = cellSize - cellGrid * 2
+    this.shooting = true
     this.health = 100
     this.projectiles = []
     this.timer=0
