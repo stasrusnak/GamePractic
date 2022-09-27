@@ -2,13 +2,21 @@ import Cell from "./classes/Cell";
 import Defender from "./classes/Defender";
 import Enemy from "./classes/Enemy";
 import Resource from "./classes/Resource";
+import Lamber from "./classes/Lamber";
 import {mapGetters} from "vuex";
 
 
 const cellSize = 100;
 const cellGrid = 3;
 const gameGrid = []
+const lumber ={
+  x :650,
+  y :40,
+  width :cellSize * 0.6,
+  height :cellSize * 0.6
+}
 let mouse = {}
+
 
 export default {
   name: "game",
@@ -28,7 +36,10 @@ export default {
       defenders: [],
       enemies: [],
       resources: [],
+      lumbers: [],
       enemiesInterval: 600,
+      income: 10,
+      incomePrice: 100,
       enemyPosition: [],
       canvasPosition: null,
       cellSize,
@@ -55,8 +66,18 @@ export default {
         y: 10,
         width: 0.1,
         height: 0.1,
+        clicked: false,
       }
       this.canvasPosition = this.canvas.getBoundingClientRect()
+
+      this.canvas.addEventListener('mousedown', () => {
+        mouse.clicked = true
+      })
+      this.canvas.addEventListener('mouseup', () => {
+        mouse.clicked = false
+      })
+
+
       this.canvas.addEventListener('mousemove', (e) => {
         mouse.x = e.x - this.canvasPosition.left
         mouse.y = e.y - this.canvasPosition.top
@@ -64,7 +85,6 @@ export default {
       this.canvas.addEventListener('mouseleave', () => {
         mouse.x = undefined,
         mouse.y = undefined
-
       })
       this.canvas.addEventListener('click', () => {
         this.move = true
@@ -82,9 +102,53 @@ export default {
           this.defenders.push(new Defender(gridPosX, gridPosY, cellSize, cellGrid, this.ctx))
           this.numberOfResources -= defenderCost
         }
+
+
+
       })
 
     },
+    handleGameLumber() {
+
+      this.ctx.fillText('Lumber: ' + this.score, 550, 40)
+
+      if (this.frame % 200 === 0){
+        this.lumbers.push(new Lamber(this.canvas,lumber.x,lumber.y,lumber.width,lumber.height,this.ctx));
+      }
+      for (let i = 0; i <  this.lumbers.length; i++){
+
+        this.lumbers[i].draw();
+        if (mouse.x && mouse.y && new Cell().collision( this.lumbers[i], mouse) && mouse.clicked){
+
+          this.numberOfResources+=this.income
+          this.lumbers.splice(i, 1);
+        }
+      }
+
+
+
+
+      //
+      // if (mouse.x && mouse.y && new Cell().collision( lumber, mouse) && mouse.clicked){
+      //   // this.numberOfResources-=this.incomePrice
+      //   console.log('income')
+      // }
+
+      // for (let i = 0; i <  this.resources.length; i++){
+      //   this.resources[i].draw();
+      //   if (this.resources[i] && mouse.x && mouse.y && new Cell().collision(this.resources[i], mouse) && mouse.clicked){
+      //
+      //     console.log('handleResource')
+      //     this.numberOfResources += this.resources[i].amount;
+      //     this.resources.splice(i, 1);
+      //     i--;
+      //   }
+      // }
+
+
+
+    },
+
     handleGameStatus() {
       this.ctx.fillStyle = 'gold'
       this.ctx.font = '20px Arial'
@@ -135,7 +199,7 @@ export default {
 
       for (let i = 0; i <  this.resources.length; i++){
         this.resources[i].draw();
-        if (this.resources[i] && mouse.x && mouse.y && new Cell().collision(this.resources[i], mouse)){
+        if (this.resources[i] && mouse.x && mouse.y && new Cell().collision(this.resources[i], mouse) && mouse.clicked){
 
           console.log('handleResource')
           this.numberOfResources += this.resources[i].amount;
@@ -224,6 +288,7 @@ export default {
       this.handleProjectiles()
       this.handleEnemies()
       this.handleGameStatus()
+      this.handleGameLumber()
       this.frame++
       this.gameGrid = []
       if (!this.gameOver) requestAnimationFrame(this.animate)
