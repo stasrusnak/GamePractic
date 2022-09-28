@@ -119,34 +119,10 @@ export default {
 
         this.lumbers[i].draw();
         if (mouse.x && mouse.y && new Cell().collision( this.lumbers[i], mouse) && mouse.clicked){
-
           this.numberOfResources+=this.income
           this.lumbers.splice(i, 1);
         }
       }
-
-
-
-
-      //
-      // if (mouse.x && mouse.y && new Cell().collision( lumber, mouse) && mouse.clicked){
-      //   // this.numberOfResources-=this.incomePrice
-      //   console.log('income')
-      // }
-
-      // for (let i = 0; i <  this.resources.length; i++){
-      //   this.resources[i].draw();
-      //   if (this.resources[i] && mouse.x && mouse.y && new Cell().collision(this.resources[i], mouse) && mouse.clicked){
-      //
-      //     console.log('handleResource')
-      //     this.numberOfResources += this.resources[i].amount;
-      //     this.resources.splice(i, 1);
-      //     i--;
-      //   }
-      // }
-
-
-
     },
 
     handleGameStatus() {
@@ -159,7 +135,6 @@ export default {
       for (let i = 0; i < this.gameGrid.length; i++) {
         this.gameGrid[i].draw()
       }
-      // console.log(this.gameGrid)
     },
     handleDefenders() {
 
