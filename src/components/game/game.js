@@ -32,7 +32,7 @@ export default {
       gameOver: false,
       numberOfResources: 400,
       score: 0,
-      winningScore: 2000,
+      winningScore: 1500,
       defenders: [],
       enemies: [],
       resources: [],
@@ -114,13 +114,18 @@ export default {
 
       if (this.frame % 200 === 0){
         this.lumbers.push(new Lamber(this.canvas,lumber.x,lumber.y,lumber.width,lumber.height,this.ctx));
+        this.numberOfResources+=this.income
       }
       for (let i = 0; i <  this.lumbers.length; i++){
-
         this.lumbers[i].draw();
         if (mouse.x && mouse.y && new Cell().collision( this.lumbers[i], mouse) && mouse.clicked){
-          this.numberOfResources+=this.income
-          this.lumbers.splice(i, 1);
+          if(this.numberOfResources>this.incomePrice){
+            console.log('12312')
+            this.numberOfResources-= this.incomePrice
+            this.income+= Math.floor(this.income*0.5)
+            this.lumbers.splice(i, 1);
+          }
+
         }
       }
     },
@@ -130,6 +135,14 @@ export default {
       this.ctx.font = '20px Arial'
       this.ctx.fillText('Gold: ' + this.numberOfResources, 20, 25)
       this.ctx.fillText('Score: ' + this.score, 20, 75)
+
+      if(this.score > this.winningScore && this.enemies.length ===0){
+        this.ctx.fillStyle='black';
+        this.ctx.font = '60px Arial'
+        this.ctx.fillText('LEVEL COMPLETE', 130, 300)
+        this.ctx.font = '20px Arial'
+        this.ctx.fillText('You win : ' + this.score, 134, 340)
+      }
     },
     handleGameGrid() {
       for (let i = 0; i < this.gameGrid.length; i++) {
@@ -223,11 +236,11 @@ export default {
         }
 
       }
-      if (this.frame % this.enemiesInterval === 0) {
+      if (this.frame % this.enemiesInterval === 0 && this.score < this.winningScore) {
         let verticalPos = Math.floor(Math.random() * 5 + 1) * cellSize + cellGrid
         this.enemies.push(new Enemy(this.canvas, verticalPos, cellSize, cellGrid, this.ctx))
         this.enemyPosition.push(verticalPos)
-        if (this.enemiesInterval > 120) this.enemiesInterval -= 100
+        if (this.enemiesInterval > 320) this.enemiesInterval -= 100
       }
     },
 
