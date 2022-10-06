@@ -3,12 +3,14 @@ import Defender from "./classes/Defender";
 import Enemy from "./classes/Enemy";
 import Resource from "./classes/Resource";
 import Lamber from "./classes/Lamber";
+import FloatingMessages from "./classes/FloatingMessages";
 import {mapGetters} from "vuex";
 
 
 const cellSize = 100;
 const cellGrid = 3;
 const gameGrid = []
+const floatingMessages = [];
 const lumber ={
   x :650,
   y :40,
@@ -76,8 +78,6 @@ export default {
       this.canvas.addEventListener('mouseup', () => {
         mouse.clicked = false
       })
-
-
       this.canvas.addEventListener('mousemove', (e) => {
         mouse.x = e.x - this.canvasPosition.left
         mouse.y = e.y - this.canvasPosition.top
@@ -96,18 +96,19 @@ export default {
             return;
           }
         }
-
         let defenderCost = 100;
         if (this.numberOfResources >= defenderCost) {
           this.defenders.push(new Defender(gridPosX, gridPosY, cellSize, cellGrid, this.ctx))
           this.numberOfResources -= defenderCost
+        }else{
+          floatingMessages.push(new FloatingMessages('No gold', mouse.x, mouse.y,
+            15,'blue', this.ctx) )
         }
-
-
-
       })
-
     },
+
+
+
     handleGameLumber() {
 
       this.ctx.fillText('Lumber: ' + this.score, 550, 40)
@@ -135,7 +136,6 @@ export default {
       this.ctx.font = '20px Arial'
       this.ctx.fillText('Gold: ' + this.numberOfResources, 20, 25)
       this.ctx.fillText('Score: ' + this.score, 20, 75)
-
       if(this.score > this.winningScore && this.enemies.length ===0){
         this.ctx.fillStyle='black';
         this.ctx.font = '60px Arial'
@@ -143,6 +143,16 @@ export default {
         this.ctx.font = '20px Arial'
         this.ctx.fillText('You win : ' + this.score, 134, 340)
       }
+    },
+
+    handleFloatingMsg(){
+      for (let i = 0; i < floatingMessages.length; i++) {
+        floatingMessages[i].update()
+        floatingMessages[i].draw()
+        if(floatingMessages[i].lifeSpan>=50){
+          floatingMessages.splice(i,1)
+          i--;
+        }      }
     },
     handleGameGrid() {
       for (let i = 0; i < this.gameGrid.length; i++) {
@@ -188,7 +198,6 @@ export default {
       for (let i = 0; i <  this.resources.length; i++){
         this.resources[i].draw();
         if (this.resources[i] && mouse.x && mouse.y && new Cell().collision(this.resources[i], mouse) && mouse.clicked){
-
           console.log('handleResource')
           this.numberOfResources += this.resources[i].amount;
           this.resources.splice(i, 1);
@@ -222,6 +231,9 @@ export default {
         if (this.enemies[i].health <= 0) {
           let gaindeResources = this.enemies[i].maxHealth/10
           this.numberOfResources += gaindeResources
+          floatingMessages.push(new FloatingMessages('+'+gaindeResources, this.enemies[i].x,
+            this.enemies[i].y,
+            20,'gold', this.ctx) )
           this.score += this.numberOfResources
           const findIndex = this.enemyPosition.indexOf(this.enemies[i].y)
           this.enemyPosition.splice(findIndex,1)
@@ -277,6 +289,7 @@ export default {
       this.handleEnemies()
       this.handleGameStatus()
       this.handleGameLumber()
+      this.handleFloatingMsg()
       this.frame++
       this.gameGrid = []
       if (!this.gameOver) requestAnimationFrame(this.animate)
