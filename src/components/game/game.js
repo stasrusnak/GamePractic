@@ -83,7 +83,7 @@ export default {
         mouse.y = e.y - this.canvasPosition.top
       })
       this.canvas.addEventListener('mouseleave', () => {
-        mouse.x = undefined,
+        mouse.x = undefined
         mouse.y = undefined
       })
       this.canvas.addEventListener('click', () => {
@@ -112,7 +112,6 @@ export default {
     handleGameLumber() {
 
       this.ctx.fillText('Lumber: ' + this.score, 550, 40)
-
       if (this.frame % 200 === 0){
         this.lumbers.push(new Lamber(this.canvas,lumber.x,lumber.y,lumber.width,lumber.height,this.ctx));
         this.numberOfResources+=this.income
@@ -154,13 +153,14 @@ export default {
           i--;
         }      }
     },
+
     handleGameGrid() {
       for (let i = 0; i < this.gameGrid.length; i++) {
         this.gameGrid[i].draw()
       }
     },
-    handleDefenders() {
 
+    handleDefenders() {
       for (let i = 0; i < this.defenders.length; i++) {
         this.defenders[i].draw()
         this.defenders[i].update()
@@ -190,7 +190,6 @@ export default {
     },
 
     handleResource(){
-
       if (this.frame % 500 === 0 && this.score < this.winningScore){
         this.resources.push(new Resource(this.canvas, cellSize, cellGrid, this.ctx));
       }
